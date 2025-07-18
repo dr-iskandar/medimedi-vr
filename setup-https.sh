@@ -118,6 +118,9 @@ server {
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
         
+        # Remove /api prefix when forwarding to backend
+        rewrite ^/api/(.*) /\$1 break;
+        
         # CORS untuk API
         add_header 'Access-Control-Allow-Origin' '*';
         add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';

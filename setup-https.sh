@@ -112,14 +112,11 @@ server {
     
     # Backend API
     location /api/ {
-        proxy_pass http://127.0.0.1:${BACKEND_PORT}/;
+        proxy_pass http://127.0.0.1:${BACKEND_PORT};
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
-        
-        # Remove /api prefix when forwarding to backend
-        rewrite ^/api/(.*) /\$1 break;
         
         # CORS untuk API
         add_header 'Access-Control-Allow-Origin' '*';

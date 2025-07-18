@@ -167,6 +167,15 @@ pnpm build
 
 # Setup Nginx
 print_status "Configuring Nginx..."
+
+# Add GLB MIME type to Nginx
+sudo tee /etc/nginx/conf.d/glb-mime.conf > /dev/null << EOF
+# MIME type for GLB files
+location ~* \.glb\$ {
+    add_header Content-Type "model/gltf-binary";
+}
+EOF
+
 sudo tee /etc/nginx/sites-available/medimedi-vr > /dev/null << EOF
 server {
     listen $FRONTEND_PORT;
@@ -207,8 +216,26 @@ server {
         }
     }
     
-    # WebXR and VR assets
-    location ~* \.(glb|gltf|jpg|jpeg|png|gif|ico|svg|woff|woff2|ttf|eot)\$ {
+    # GLB files with proper MIME type
+    location ~* \.glb\$ {
+        root $APP_DIR/medimedi-konvergen-vr/dist;
+        add_header Content-Type "model/gltf-binary";
+        add_header Access-Control-Allow-Origin *;
+        add_header Cache-Control "public, max-age=31536000";
+        expires 1y;
+    }
+    
+    # GLTF files
+    location ~* \.gltf\$ {
+        root $APP_DIR/medimedi-konvergen-vr/dist;
+        add_header Content-Type "model/gltf+json";
+        add_header Access-Control-Allow-Origin *;
+        add_header Cache-Control "public, max-age=31536000";
+        expires 1y;
+    }
+    
+    # Other WebXR and VR assets
+    location ~* \.(jpg|jpeg|png|gif|ico|svg|woff|woff2|ttf|eot)\$ {
         root $APP_DIR/medimedi-konvergen-vr/dist;
         expires 1y;
         add_header Cache-Control "public, immutable";

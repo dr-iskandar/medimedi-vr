@@ -12,8 +12,11 @@ from src.routes.emotion import emotion_bp
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
 app.config['SECRET_KEY'] = 'asdf#FGSgvasgf$5$WGT'
 
-# Enable CORS for all routes
-CORS(app)
+# Enable CORS for all routes with specific configuration
+CORS(app, 
+     origins=['*'],
+     allow_headers=['Content-Type', 'Authorization', 'X-Requested-With'],
+     methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
 
 app.register_blueprint(user_bp, url_prefix='/api')
 app.register_blueprint(emotion_bp, url_prefix='/api/emotion')

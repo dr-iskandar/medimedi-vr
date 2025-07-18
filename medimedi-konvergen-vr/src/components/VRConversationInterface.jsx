@@ -55,7 +55,7 @@ export function VRConversationInterface({ onEmotionChange }) {
   const analyzeEmotion = async (text) => {
     try {
       const backendUrl = import.meta.env.VITE_BACKEND_DIRECT_URL || 'http://localhost:5001';
-      const response = await fetch(`${backendUrl}/emotion/analyze`, {
+      const response = await fetch(`${backendUrl}/api/emotion/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text })

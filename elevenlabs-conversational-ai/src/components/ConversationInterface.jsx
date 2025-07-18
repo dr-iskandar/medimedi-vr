@@ -147,13 +147,9 @@ export default function ConversationInterface({ agentId }) {
     try {
       console.log('🧠 Analyzing emotion for text:', text);
       
-      // Try localhost first for development, then fallback to relative URL
-      let apiUrl = 'http://localhost:5000/api/emotion/analyze';
-      
-      // Check if we're in production (no localhost available)
-      if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-        apiUrl = '/api/emotion/analyze';
-      }
+      // Use environment variable or fallback to relative URL for production
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5001' : '');
+      const apiUrl = backendUrl ? `${backendUrl}/emotion/analyze` : '/api/emotion/analyze';
       
       console.log('🔗 Using API URL:', apiUrl);
       

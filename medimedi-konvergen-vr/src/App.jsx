@@ -23,17 +23,18 @@ function Scene({ isVRActive, isVRConnected }) {
   // Check backend status
    useEffect(() => {
      const checkBackend = async () => {
-       try {
-         const response = await fetch('http://localhost:5001/api/emotion/test');
-         if (response.ok) {
-           setBackendStatus('connected');
-         } else {
-           setBackendStatus('error');
-         }
-       } catch (error) {
-         setBackendStatus('disconnected');
-       }
-     };
+    try {
+      const backendUrl = import.meta.env.VITE_BACKEND_DIRECT_URL || 'http://localhost:5001';
+      const response = await fetch(`${backendUrl}/api/emotion/test`);
+      if (response.ok) {
+        setBackendStatus('connected');
+      } else {
+        setBackendStatus('error');
+      }
+    } catch (error) {
+      setBackendStatus('disconnected');
+    }
+  };
      
      checkBackend();
      const interval = setInterval(checkBackend, 30000); // Check every 30 seconds

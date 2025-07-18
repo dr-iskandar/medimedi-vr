@@ -17,7 +17,8 @@ export function DebugPanel({
   
   const testBackendConnection = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/emotion/test');
+      const backendUrl = import.meta.env.VITE_BACKEND_DIRECT_URL || 'http://localhost:5001';
+      const response = await fetch(`${backendUrl}/api/emotion/test`);
       const data = await response.json();
       console.log('🧪 Backend test result:', data);
       alert('Backend test successful! Check console for details.');
@@ -29,7 +30,8 @@ export function DebugPanel({
   
   const testEmotionAnalysis = async (testText) => {
     try {
-      const response = await fetch('http://localhost:5001/api/emotion/analyze', {
+      const backendUrl = import.meta.env.VITE_BACKEND_DIRECT_URL || 'http://localhost:5001';
+      const response = await fetch(`${backendUrl}/api/emotion/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: testText })

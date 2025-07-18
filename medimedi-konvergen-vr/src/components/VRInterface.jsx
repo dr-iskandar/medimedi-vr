@@ -50,7 +50,7 @@ export function VRInterface({
     const checkBackend = async () => {
       try {
         const backendUrl = import.meta.env.VITE_BACKEND_DIRECT_URL || 'http://localhost:5001';
-        const response = await fetch(`${backendUrl}/api/emotion/test`);
+        const response = await fetch(`${backendUrl}/emotion/test`);
         if (response.ok) {
           setBackendStatus('connected');
         } else {

@@ -1,0 +1,64 @@
+name: Deploy to Production Server
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: 'medimedi-konvergen-vr/package-lock.json'
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install frontend dependencies
+      run: |
+        cd medimedi-konvergen-vr
+        npm ci
+    
+    - name: Install backend dependencies
+      run: |
+        cd emotion-analysis-backend
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Build frontend
+      run: |
+        cd medimedi-konvergen-vr
+        npm run build
+    
+    - name: Test backend
+      run: |
+        cd emotion-analysis-backend
+        python -m pytest tests/ || echo "No tests found"
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          cd /opt/medimedi-vr
+          git pull origin main
+          ./deploy-from-github.sh

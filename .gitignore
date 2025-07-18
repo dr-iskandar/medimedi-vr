@@ -134,7 +134,8 @@ out
 
 # Gatsby files
 .cache/
-public
+# public (commented out to allow VR assets)
+# public
 
 # Storybook build outputs
 .out

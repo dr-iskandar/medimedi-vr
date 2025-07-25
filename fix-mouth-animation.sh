@@ -27,6 +27,10 @@ echo ""
 
 # Step 1: Build frontend locally
 echo -e "${YELLOW}🔨 Step 1: Building frontend locally...${NC}"
+
+# Navigate to the correct project directory
+cd medimedi-konvergen-vr
+
 if ! command -v pnpm &> /dev/null; then
     echo -e "${RED}❌ pnpm not found. Installing...${NC}"
     npm install -g pnpm
@@ -42,6 +46,9 @@ fi
 echo -e "${YELLOW}🏗️ Building project...${NC}"
 pnpm build
 
+# Go back to parent directory
+cd ..
+
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✅ Frontend build successful${NC}"
 else
@@ -54,10 +61,10 @@ echo -e "${YELLOW}🚀 Step 2: Deploying to server...${NC}"
 
 # Copy updated files to server
 echo -e "${BLUE}📤 Copying files to server...${NC}"
-scp -P $SERVER_PORT -r dist/ $SERVER_USER@$SERVER_IP:$REMOTE_PATH/
-scp -P $SERVER_PORT src/components/Avatar.jsx $SERVER_USER@$SERVER_IP:$REMOTE_PATH/src/components/
-scp -P $SERVER_PORT src/components/VRConversationInterface.jsx $SERVER_USER@$SERVER_IP:$REMOTE_PATH/src/components/
-scp -P $SERVER_PORT src/App.jsx $SERVER_USER@$SERVER_IP:$REMOTE_PATH/src/
+scp -P $SERVER_PORT -r medimedi-konvergen-vr/dist/ $SERVER_USER@$SERVER_IP:$REMOTE_PATH/
+scp -P $SERVER_PORT medimedi-konvergen-vr/src/components/Avatar.jsx $SERVER_USER@$SERVER_IP:$REMOTE_PATH/src/components/
+scp -P $SERVER_PORT medimedi-konvergen-vr/src/components/VRConversationInterface.jsx $SERVER_USER@$SERVER_IP:$REMOTE_PATH/src/components/
+scp -P $SERVER_PORT medimedi-konvergen-vr/src/App.jsx $SERVER_USER@$SERVER_IP:$REMOTE_PATH/src/
 
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✅ Files copied successfully${NC}"

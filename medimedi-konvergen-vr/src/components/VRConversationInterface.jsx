@@ -6,6 +6,7 @@ export function VRConversationInterface({ onEmotionChange }) {
   const [isConnected, setIsConnected] = useState(false);
   const [currentEmotion, setCurrentEmotion] = useState('netral');
   const [messages, setMessages] = useState([]);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   const conversation = useConversation({
     onConnect: () => {
@@ -15,6 +16,7 @@ export function VRConversationInterface({ onEmotionChange }) {
     onDisconnect: () => {
       console.log('🔌 VR Conversation disconnected');
       setIsConnected(false);
+      setIsSpeaking(false); // Reset speaking state when disconnected
     },
     onMessage: async (message) => {
       console.log('📨 VR Message received:', message);
@@ -35,14 +37,14 @@ export function VRConversationInterface({ onEmotionChange }) {
           const emotion = await analyzeEmotion(message.message);
           if (emotion) {
             setCurrentEmotion(emotion.emotion);
-            onEmotionChange?.({ emotion: emotion.emotion, confidence: emotion.confidence, isSpeaking: conversation.isSpeaking });
+            onEmotionChange?.({ emotion: emotion.emotion, confidence: emotion.confidence, isSpeaking: isSpeaking });
           }
         } catch (error) {
           console.error('❌ VR Emotion analysis failed:', error);
           // Fallback emotion detection
           const fallbackEmotion = detectEmotionFallback(message.message);
           setCurrentEmotion(fallbackEmotion);
-            onEmotionChange?.({ emotion: fallbackEmotion, confidence: 0.5, isSpeaking: conversation.isSpeaking });
+            onEmotionChange?.({ emotion: fallbackEmotion, confidence: 0.5, isSpeaking: isSpeaking });
         }
       }
     },
@@ -107,6 +109,22 @@ export function VRConversationInterface({ onEmotionChange }) {
     }
   };
 
+  // Monitor conversation.isSpeaking changes and update local state
+  useEffect(() => {
+    if (conversation && typeof conversation.isSpeaking === 'boolean') {
+      const newIsSpeaking = conversation.isSpeaking;
+      console.log('🎤 VR Speaking status changed:', newIsSpeaking);
+      setIsSpeaking(newIsSpeaking);
+      
+      // Notify parent component about speaking status change
+      onEmotionChange?.({ 
+        emotion: currentEmotion, 
+        confidence: 0.5, 
+        isSpeaking: newIsSpeaking 
+      });
+    }
+  }, [conversation.isSpeaking, currentEmotion, onEmotionChange]);
+
   return {
     agentId,
     setAgentId,
@@ -115,7 +133,8 @@ export function VRConversationInterface({ onEmotionChange }) {
     messages,
     startConversation,
     endConversation,
-    conversation
+    conversation,
+    isSpeaking
   };
 }
 

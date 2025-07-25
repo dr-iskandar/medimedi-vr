@@ -184,17 +184,36 @@ export function Avatar({ currentEmotion = 'netral', isSpeaking = false }) {
 
   // Handle mouth animation for speaking (separate useEffect for better control)
   useEffect(() => {
-    if (!wolf3DHead || !wolf3DHead.morphTargetDictionary) return;
+    if (!wolf3DHead || !wolf3DHead.morphTargetDictionary) {
+      console.log('🎤 VR Mouth animation: wolf3DHead or morphTargetDictionary not available');
+      return;
+    }
 
-    const mouthOpenIndex = wolf3DHead.morphTargetDictionary["mouthOpen"];
+    console.log('🎤 VR Available morph targets:', Object.keys(wolf3DHead.morphTargetDictionary));
+    
+    // Try multiple possible names for mouth open morph target
+    const possibleMouthNames = ["mouthOpen", "mouth_open", "MouthOpen", "Mouth_Open", "viseme_aa", "viseme_E", "jawOpen", "jaw_open"];
+    let mouthOpenIndex = undefined;
+    let foundMouthName = null;
+    
+    for (const name of possibleMouthNames) {
+      if (wolf3DHead.morphTargetDictionary[name] !== undefined) {
+        mouthOpenIndex = wolf3DHead.morphTargetDictionary[name];
+        foundMouthName = name;
+        console.log(`🎤 VR Found mouth morph target: ${name} at index ${mouthOpenIndex}`);
+        break;
+      }
+    }
 
     if (mouthOpenIndex !== undefined) {
+      console.log(`🎤 VR Setting up mouth animation with ${foundMouthName}, isSpeaking:`, isSpeaking);
       let animationFrameId;
       const animateMouth = () => {
         if (isSpeaking) {
-          const time = Date.now() * 0.005; // Adjust speed of animation
-          const mouthValue = (Math.sin(time) + 1) / 2; // Oscillate between 0 and 1
+          const time = Date.now() * 0.008; // Slightly faster animation
+          const mouthValue = Math.abs(Math.sin(time)) * 0.7; // Oscillate between 0 and 0.7
           wolf3DHead.morphTargetInfluences[mouthOpenIndex] = mouthValue;
+          console.log(`🎤 VR Mouth animation value: ${mouthValue.toFixed(3)}`);
         } else {
           wolf3DHead.morphTargetInfluences[mouthOpenIndex] = 0.0; // Closed when not speaking
         }
@@ -205,10 +224,13 @@ export function Avatar({ currentEmotion = 'netral', isSpeaking = false }) {
 
       return () => {
         cancelAnimationFrame(animationFrameId);
-        wolf3DHead.morphTargetInfluences[mouthOpenIndex] = 0.0;
+        if (wolf3DHead.morphTargetInfluences && mouthOpenIndex < wolf3DHead.morphTargetInfluences.length) {
+          wolf3DHead.morphTargetInfluences[mouthOpenIndex] = 0.0;
+        }
       };
     } else {
-      console.warn("⚠️ VR mouthOpen blend shape not found");
+      console.warn("⚠️ VR No mouth morph target found. Available targets:", Object.keys(wolf3DHead.morphTargetDictionary));
+      console.warn("⚠️ VR Tried these names:", possibleMouthNames);
     }
   }, [isSpeaking, wolf3DHead]);
 

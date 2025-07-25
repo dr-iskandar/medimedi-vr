@@ -19,13 +19,14 @@ function Scene({ isVRActive, isVRConnected }) {
   const [lastAnalysis, setLastAnalysis] = useState(null);
   const [emotionHistory, setEmotionHistory] = useState([]);
   const [backendStatus, setBackendStatus] = useState('checking');
+  const [isSpeaking, setIsSpeaking] = useState(false);
   
   // Check backend status
    useEffect(() => {
      const checkBackend = async () => {
     try {
       const backendUrl = import.meta.env.VITE_BACKEND_DIRECT_URL || 'http://localhost:5001';
-      const response = await fetch(`${backendUrl}/emotion/test`);
+      const response = await fetch(`${backendUrl}/api/emotion/test`);
       if (response.ok) {
         setBackendStatus('connected');
       } else {
@@ -42,12 +43,13 @@ function Scene({ isVRActive, isVRConnected }) {
      return () => clearInterval(interval);
    }, []);
   
-  // Use VR conversation interface
+  // Use VR conversation interface as a proper React component
   const conversationInterface = VRConversationInterface({
     onEmotionChange: (emotion) => {
       console.log('🎭 VR Emotion changed:', emotion);
       setCurrentEmotion(emotion.emotion);
       setEmotionConfidence(emotion.confidence || 0.5);
+      setIsSpeaking(emotion.isSpeaking || false); // Update isSpeaking state
       
       const analysisData = {
         emotion: emotion.emotion,
@@ -76,7 +78,7 @@ function Scene({ isVRActive, isVRConnected }) {
       <Environment360 />
       
       {/* Avatar Character with emotion support */}
-      <Avatar currentEmotion={currentEmotion} isSpeaking={conversationInterface.conversation.isSpeaking} />
+      <Avatar currentEmotion={currentEmotion} isSpeaking={isSpeaking} />
       
       {/* Ground Plane for NPC positioning */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]}>

@@ -182,33 +182,44 @@ function AvatarModel({ isSpeaking, audioData, currentEmotion }) {
     // NO mixer updates - we don't want any body animations
     // NO head movement - character stays completely still
     
-    // ONLY mouthOpen animation when speaking (0 to 1 repeatedly)
-    if (wolf3DHead && wolf3DHead.morphTargetDictionary && wolf3DHead.morphTargetInfluences && isSpeaking) {
+    // Audio-driven mouth animation using real-time volume data
+    if (wolf3DHead && wolf3DHead.morphTargetDictionary && wolf3DHead.morphTargetInfluences) {
       const mouthOpenIndex = wolf3DHead.morphTargetDictionary['mouthOpen'];
       
       if (mouthOpenIndex !== undefined && mouthOpenIndex < wolf3DHead.morphTargetInfluences.length) {
-        // Update speaking time
-        speakingTimeRef.current += delta;
-        
-        // Create oscillating value from 0 to 1 (sine wave)
-        const frequency = 4; // How fast the mouth opens/closes (cycles per second)
-        const mouthOpenValue = (Math.sin(speakingTimeRef.current * frequency * Math.PI) + 1) / 2; // Normalize to 0-1
-        
-        wolf3DHead.morphTargetInfluences[mouthOpenIndex] = mouthOpenValue;
-        
-        // Log occasionally for debugging
-        if (Math.floor(speakingTimeRef.current * 10) % 10 === 0) {
-          console.log('mouthOpen value:', mouthOpenValue.toFixed(3));
+        // Use audio data if available and speaking
+         if (audioData && audioData.volume !== undefined && isSpeaking) {
+           // Use real-time volume data (already normalized 0-1)
+           let mouthOpenValue = audioData.volume;
+           
+           // Apply aggressive scaling for more visible mouth movement from small volumes
+           mouthOpenValue = Math.pow(mouthOpenValue, 0.1); // Cube root for even more responsive low volumes
+           mouthOpenValue = Math.min(mouthOpenValue * 2.5, 1.0); // Strong amplification for visibility
+           
+           // Add minimum threshold to ensure some movement is always visible
+           if (mouthOpenValue > 0.05) {
+             mouthOpenValue = Math.max(mouthOpenValue, 0.15); // Minimum visible opening
+           }
+          
+          wolf3DHead.morphTargetInfluences[mouthOpenIndex] = mouthOpenValue;
+          
+          // Log occasionally for debugging
+          if (Math.floor(Date.now() / 100) % 10 === 0) {
+            console.log('Audio-driven mouthOpen value:', mouthOpenValue.toFixed(3), 'from volume:', audioData.volume.toFixed(3));
+          }
+        } else if (isSpeaking) {
+          // Fallback to sine wave animation if no audio data
+          speakingTimeRef.current += delta;
+          const frequency = 4;
+          const mouthOpenValue = (Math.sin(speakingTimeRef.current * frequency * Math.PI) + 1) / 2;
+          wolf3DHead.morphTargetInfluences[mouthOpenIndex] = mouthOpenValue;
+        } else {
+          // Reset mouthOpen when not speaking
+          wolf3DHead.morphTargetInfluences[mouthOpenIndex] = 0;
+          speakingTimeRef.current = 0;
         }
       } else {
         console.warn('mouthOpen morph target not found in Wolf3D_Head');
-      }
-    } else if (wolf3DHead && wolf3DHead.morphTargetInfluences && !isSpeaking) {
-      // Reset mouthOpen when not speaking
-      const mouthOpenIndex = wolf3DHead.morphTargetDictionary?.['mouthOpen'];
-      if (mouthOpenIndex !== undefined) {
-        wolf3DHead.morphTargetInfluences[mouthOpenIndex] = 0;
-        speakingTimeRef.current = 0; // Reset speaking time
       }
     }
   });

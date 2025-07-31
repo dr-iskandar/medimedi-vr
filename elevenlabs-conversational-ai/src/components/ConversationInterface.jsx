@@ -6,6 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
 import { Trash2, Mic, MicOff, Volume2 } from 'lucide-react';
 import Avatar3D from './Avatar3D';
+import AudioVisualization from './AudioVisualization';
+import { useAudioAnalysis } from '../hooks/useAudioAnalysis';
 
 export default function ConversationInterface({ agentId }) {
   const [messages, setMessages] = useState([]);
@@ -139,6 +141,9 @@ export default function ConversationInterface({ agentId }) {
       console.log('✅ Agent message processed with emotion analysis triggered');
     }
   });
+
+  // Add useAudioAnalysis hook
+  const audioData = useAudioAnalysis(conversation.isSpeaking);
 
   // Analyze emotion using backend API
   const analyzeEmotion = async (text) => {
@@ -283,7 +288,7 @@ export default function ConversationInterface({ agentId }) {
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Left Column - Controls */}
           <div className="lg:col-span-1">
             <Card>
@@ -396,7 +401,15 @@ export default function ConversationInterface({ agentId }) {
             </Card>
           </div>
 
-          {/* Middle Column - 3D Avatar */}
+          {/* Audio Analysis Column */}
+          <div className="lg:col-span-1">
+            <AudioVisualization 
+              audioData={audioData} 
+              isSpeaking={conversation.isSpeaking}
+            />
+          </div>
+
+          {/* 3D Avatar Column */}
           <div className="lg:col-span-1">
             <Card className="h-[600px]">
               <CardHeader>
@@ -405,7 +418,7 @@ export default function ConversationInterface({ agentId }) {
               <CardContent className="h-[500px] p-0">
                 <Avatar3D 
                   isSpeaking={conversation.isSpeaking} 
-                  audioData={[]}
+                  audioData={audioData}
                   currentEmotion={currentEmotion}
                 />
               </CardContent>

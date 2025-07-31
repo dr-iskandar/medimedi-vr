@@ -4,7 +4,7 @@ import { useFrame } from '@react-three/fiber';
 import { LoopRepeat } from 'three';
 
 export function Avatar({ currentEmotion = 'netral', isSpeaking = false }) {
-  const { scene, animations } = useGLTF("/kevin_kecil_v4.glb");
+  const { scene, animations } = useGLTF("/rizky.glb");
   const avatarRef = useRef();
   const { actions } = useAnimations(animations, avatarRef);
   const [wolf3DHead, setWolf3DHead] = useState(null);
@@ -35,14 +35,14 @@ export function Avatar({ currentEmotion = 'netral', isSpeaking = false }) {
   }, [animations]);
 
   useEffect(() => {
-    if (actions && actions.Idle) {
-      console.log('🎭 VR Starting Idle animation');
-      // Configure smooth looping for Idle animation
-      actions.Idle.reset();
-      actions.Idle.setLoop(LoopRepeat, Infinity); // LoopRepeat with infinite repetitions
-      actions.Idle.clampWhenFinished = false;
-      actions.Idle.fadeIn(0.5); // Smooth fade in
-      actions.Idle.play();
+    if (actions && actions["Idle V2"]) {
+      console.log('🎭 VR Starting Idle V2 animation');
+      // Configure smooth looping for Idle V2 animation
+      actions["Idle V2"].reset();
+      actions["Idle V2"].setLoop(LoopRepeat, Infinity); // LoopRepeat with infinite repetitions
+      actions["Idle V2"].clampWhenFinished = false;
+      actions["Idle V2"].fadeIn(0.5); // Smooth fade in
+      actions["Idle V2"].play();
     }
   }, [actions]);
 
@@ -50,7 +50,7 @@ export function Avatar({ currentEmotion = 'netral', isSpeaking = false }) {
     if (avatarRef.current) {
       // Position the avatar with feet at ground zero and in front of user
       avatarRef.current.position.set(0, 0, -1); // Feet at ground zero, in front of user
-      avatarRef.current.scale.set(1.2, 1.2, 1.2); // Slightly larger
+      avatarRef.current.scale.set(0.9, 0.9, 0.9); // Slightly larger
       avatarRef.current.rotation.y = 0; // Face the camera
       
       // Find Wolf3D_Head mesh for blend shapes

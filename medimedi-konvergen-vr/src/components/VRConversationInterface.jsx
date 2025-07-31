@@ -1,11 +1,15 @@
 import { useConversation } from '@elevenlabs/react';
 import { useState, useEffect } from 'react';
+import { useAudioAnalysis } from '../hooks/useAudioAnalysis';
 
 export function VRConversationInterface({ onEmotionChange }) {
-  const [agentId, setAgentId] = useState("agent_01jz0apm4sfc59m063j29dpyge"); // Hardcoded Agent ID
+  const [agentId, setAgentId] = useState("agent_01k0rh29kxebks7s0stwrszcfe"); // Hardcoded Agent ID
   const [isConnected, setIsConnected] = useState(false);
   const [currentEmotion, setCurrentEmotion] = useState('netral');
   const [messages, setMessages] = useState([]);
+  
+  // Audio analysis for real-time mouth animation
+  const audioData = useAudioAnalysis(isConnected);
 
   const conversation = useConversation({
     onConnect: () => {
@@ -125,7 +129,8 @@ export function VRConversationInterface({ onEmotionChange }) {
     messages,
     startConversation,
     endConversation,
-    conversation
+    conversation,
+    audioData
   };
 }
 

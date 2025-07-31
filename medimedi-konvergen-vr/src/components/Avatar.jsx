@@ -3,7 +3,7 @@ import { useRef, useEffect, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { LoopRepeat } from 'three';
 
-export function Avatar({ currentEmotion = 'netral', isSpeaking = false }) {
+export function Avatar({ currentEmotion = 'netral', isSpeaking = false, audioData = null }) {
   const { scene, animations } = useGLTF("/rizky.glb");
   const avatarRef = useRef();
   const { actions } = useAnimations(animations, avatarRef);
@@ -239,7 +239,7 @@ export function Avatar({ currentEmotion = 'netral', isSpeaking = false }) {
     setTargetEmotionValues(newTargetValues);
   }, [currentEmotion]);
 
-  // Handle mouth animation for speaking (separate useEffect for better control)
+  // Handle audio-driven mouth animation for speaking
   useEffect(() => {
     if (!wolf3DHead || !wolf3DHead.morphTargetDictionary) return;
 
@@ -249,9 +249,52 @@ export function Avatar({ currentEmotion = 'netral', isSpeaking = false }) {
       let animationFrameId;
       const animateMouth = () => {
         if (isSpeaking) {
-          const time = Date.now() * 0.005; // Adjust speed of animation
-          const mouthValue = (Math.sin(time) + 1) / 2; // Oscillate between 0 and 1
-          wolf3DHead.morphTargetInfluences[mouthOpenIndex] = mouthValue;
+          // Use audio data if available for real-time mouth animation
+          if (audioData && audioData.volume !== undefined) {
+            // Use real-time volume data (already normalized 0-1)
+            let mouthOpenValue = audioData.volume;
+            
+            // Dynamic scaling based on emotion
+            let emotionMultiplier = 1.0;
+            let powerFactor = 0.5; // Default square root
+            let minThreshold = 0.08;
+            
+            // Adjust parameters based on current emotion
+            if (currentEmotion === 'marah') {
+              emotionMultiplier = 2.2; // More aggressive amplification for anger
+              powerFactor = 0.4; // More responsive to low volumes
+              minThreshold = 0.12; // Higher minimum for angry expression
+            } else if (currentEmotion === 'sedih') {
+              emotionMultiplier = 1.2; // Subtle movement for sadness
+              powerFactor = 0.6; // Less responsive
+              minThreshold = 0.05; // Lower minimum for subdued expression
+            } else if (currentEmotion === 'senang') {
+              emotionMultiplier = 1.8; // Lively movement for happiness
+              powerFactor = 0.45; // Moderately responsive
+              minThreshold = 0.1; // Moderate minimum
+            }
+            
+            // Apply emotion-based scaling
+            mouthOpenValue = Math.pow(mouthOpenValue, powerFactor);
+            mouthOpenValue = Math.min(mouthOpenValue * emotionMultiplier, 1.0);
+            
+            // Add emotion-based minimum threshold
+            if (mouthOpenValue > 0.03) {
+              mouthOpenValue = Math.max(mouthOpenValue, minThreshold);
+            }
+            
+            wolf3DHead.morphTargetInfluences[mouthOpenIndex] = mouthOpenValue;
+            
+            // Log occasionally for debugging
+            if (Math.floor(Date.now() / 100) % 20 === 0) {
+              console.log('🎤 VR Audio-driven mouthOpen value:', mouthOpenValue.toFixed(3), 'from volume:', audioData.volume.toFixed(3));
+            }
+          } else {
+            // Fallback to sine wave animation if no audio data
+            const time = Date.now() * 0.005;
+            const mouthValue = (Math.sin(time) + 1) / 2;
+            wolf3DHead.morphTargetInfluences[mouthOpenIndex] = mouthValue;
+          }
         } else {
           wolf3DHead.morphTargetInfluences[mouthOpenIndex] = 0.0; // Closed when not speaking
         }
@@ -267,7 +310,7 @@ export function Avatar({ currentEmotion = 'netral', isSpeaking = false }) {
     } else {
       console.warn("⚠️ VR mouthOpen blend shape not found");
     }
-  }, [isSpeaking, wolf3DHead]);
+  }, [isSpeaking, wolf3DHead, audioData]);
 
   // Reset to neutral expression when conversation stops
   useEffect(() => {

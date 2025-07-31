@@ -75,8 +75,12 @@ function Scene({ isVRActive, isVRConnected }) {
       {/* 360 Environment */}
       <Environment360 />
       
-      {/* Avatar Character with emotion support */}
-      <Avatar currentEmotion={currentEmotion} isSpeaking={conversationInterface.conversation.isSpeaking} />
+      {/* Avatar Character with emotion support and audio-driven animation */}
+      <Avatar 
+        currentEmotion={currentEmotion} 
+        isSpeaking={conversationInterface.conversation.isSpeaking}
+        audioData={conversationInterface.audioData}
+      />
       
       {/* Ground Plane for NPC positioning */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]}>

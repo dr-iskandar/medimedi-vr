@@ -80,9 +80,22 @@ function AvatarModel({ isSpeaking, audioData, currentEmotion }) {
     // Reset all emotion-related blend shapes to 0
     const mouthSmileIndex = wolf3DHead.morphTargetDictionary?.["mouthSmile"];
     const mouthAngryIndex = wolf3DHead.morphTargetDictionary?.["mouthAngry"];
+    const sedihIndex = wolf3DHead.morphTargetDictionary?.["sedih"];
+    const kecewaIndex = wolf3DHead.morphTargetDictionary?.["kecewa"];
+    const takutIndex = wolf3DHead.morphTargetDictionary?.["takut"];
+    const bingungIndex = wolf3DHead.morphTargetDictionary?.["bingung"];
+    const diamIndex = wolf3DHead.morphTargetDictionary?.["diam"];
+    const tertawaIndex = wolf3DHead.morphTargetDictionary?.["tertawa"];
 
+    // Reset all morph targets
     if (mouthSmileIndex !== undefined) wolf3DHead.morphTargetInfluences[mouthSmileIndex] = 0;
     if (mouthAngryIndex !== undefined) wolf3DHead.morphTargetInfluences[mouthAngryIndex] = 0;
+    if (sedihIndex !== undefined) wolf3DHead.morphTargetInfluences[sedihIndex] = 0;
+    if (kecewaIndex !== undefined) wolf3DHead.morphTargetInfluences[kecewaIndex] = 0;
+    if (takutIndex !== undefined) wolf3DHead.morphTargetInfluences[takutIndex] = 0;
+    if (bingungIndex !== undefined) wolf3DHead.morphTargetInfluences[bingungIndex] = 0;
+    if (diamIndex !== undefined) wolf3DHead.morphTargetInfluences[diamIndex] = 0;
+    if (tertawaIndex !== undefined) wolf3DHead.morphTargetInfluences[tertawaIndex] = 0;
 
     // Apply emotion-specific blend shapes
     if (emotion === "marah") {
@@ -90,14 +103,46 @@ function AvatarModel({ isSpeaking, audioData, currentEmotion }) {
         wolf3DHead.morphTargetInfluences[mouthAngryIndex] = 1.0 * intensity;
         console.log("Applied mouthAngry for anger:", 1.0 * intensity);
       }
+      if (browDownIndex !== undefined) {
+        wolf3DHead.morphTargetInfluences[browDownIndex] = 0.8 * intensity;
+      }
     } else if (emotion === "senang") {
       if (mouthSmileIndex !== undefined && mouthSmileIndex < wolf3DHead.morphTargetInfluences.length) {
         wolf3DHead.morphTargetInfluences[mouthSmileIndex] = 1.0 * intensity;
         console.log("Applied mouthSmile for happiness:", 1.0 * intensity);
       }
+    } else if (emotion === "sedih") {
+      if (sedihIndex !== undefined) {
+        wolf3DHead.morphTargetInfluences[sedihIndex] = 1.0 * intensity;
+        console.log("Applied sedih blendshape:", 1.0 * intensity);
+      }
+    } else if (emotion === "kecewa") {
+      if (kecewaIndex !== undefined) {
+        wolf3DHead.morphTargetInfluences[kecewaIndex] = 1.0 * intensity;
+        console.log("Applied kecewa blendshape:", 1.0 * intensity);
+      }
+    } else if (emotion === "takut") {
+      if (takutIndex !== undefined) {
+        wolf3DHead.morphTargetInfluences[takutIndex] = 1.0 * intensity;
+        console.log("Applied takut blendshape:", 1.0 * intensity);
+      }
+    } else if (emotion === "bingung") {
+      if (bingungIndex !== undefined) {
+        wolf3DHead.morphTargetInfluences[bingungIndex] = 1.0 * intensity;
+        console.log("Applied bingung blendshape:", 1.0 * intensity);
+      }
+    } else if (emotion === "diam") {
+      if (diamIndex !== undefined) {
+        wolf3DHead.morphTargetInfluences[diamIndex] = 1.0 * intensity;
+        console.log("Applied diam blendshape:", 1.0 * intensity);
+      }
+    } else if (emotion === "tertawa") {
+      if (tertawaIndex !== undefined) {
+        wolf3DHead.morphTargetInfluences[tertawaIndex] = 1.0 * intensity;
+        console.log("Applied tertawa blendshape:", 1.0 * intensity);
+      }
     } else { // For neutral or other emotions, ensure they are 0
-      if (mouthSmileIndex !== undefined) wolf3DHead.morphTargetInfluences[mouthSmileIndex] = 0;
-      if (mouthAngryIndex !== undefined) wolf3DHead.morphTargetInfluences[mouthAngryIndex] = 0;
+      // All morph targets are already reset above
     }
   };
 
@@ -113,12 +158,21 @@ function AvatarModel({ isSpeaking, audioData, currentEmotion }) {
       if (wolf3DHead && wolf3DHead.morphTargetInfluences) {
         const mouthSmileIndex = wolf3DHead.morphTargetDictionary?.["mouthSmile"];
         const mouthAngryIndex = wolf3DHead.morphTargetDictionary?.["mouthAngry"];
-        if (mouthSmileIndex !== undefined) {
-          wolf3DHead.morphTargetInfluences[mouthSmileIndex] = 0;
-        }
-        if (mouthAngryIndex !== undefined) {
-          wolf3DHead.morphTargetInfluences[mouthAngryIndex] = 0;
-        }
+        const sedihIndex = wolf3DHead.morphTargetDictionary?.["sedih"];
+        const kecewaIndex = wolf3DHead.morphTargetDictionary?.["kecewa"];
+        const takutIndex = wolf3DHead.morphTargetDictionary?.["takut"];
+        const bingungIndex = wolf3DHead.morphTargetDictionary?.["bingung"];
+        const diamIndex = wolf3DHead.morphTargetDictionary?.["diam"];
+        const tertawaIndex = wolf3DHead.morphTargetDictionary?.["tertawa"];
+        
+        if (mouthSmileIndex !== undefined) wolf3DHead.morphTargetInfluences[mouthSmileIndex] = 0;
+        if (mouthAngryIndex !== undefined) wolf3DHead.morphTargetInfluences[mouthAngryIndex] = 0;
+        if (sedihIndex !== undefined) wolf3DHead.morphTargetInfluences[sedihIndex] = 0;
+        if (kecewaIndex !== undefined) wolf3DHead.morphTargetInfluences[kecewaIndex] = 0;
+        if (takutIndex !== undefined) wolf3DHead.morphTargetInfluences[takutIndex] = 0;
+        if (bingungIndex !== undefined) wolf3DHead.morphTargetInfluences[bingungIndex] = 0;
+        if (diamIndex !== undefined) wolf3DHead.morphTargetInfluences[diamIndex] = 0;
+        if (tertawaIndex !== undefined) wolf3DHead.morphTargetInfluences[tertawaIndex] = 0;
       }
     }
   }, [currentEmotion, wolf3DHead]);

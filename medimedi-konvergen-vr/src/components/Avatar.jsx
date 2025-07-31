@@ -14,16 +14,26 @@ export function Avatar({ currentEmotion = 'netral', isSpeaking = false }) {
     mouthSmile: 0,
     mouthAngry: 0,
     mouthSad: 0,
+    mouthFrown: 0,
+    mouthOpen: 0,
     browDown: 0,
-    browUp: 0
+    browUp: 0,
+    eyeWide: 0,
+    eyeSquint: 0,
+    cheekPuff: 0
   });
   
   const [currentEmotionValues, setCurrentEmotionValues] = useState({
     mouthSmile: 0,
     mouthAngry: 0,
     mouthSad: 0,
+    mouthFrown: 0,
+    mouthOpen: 0,
     browDown: 0,
-    browUp: 0
+    browUp: 0,
+    eyeWide: 0,
+    eyeSquint: 0,
+    cheekPuff: 0
   });
 
   useEffect(() => {
@@ -121,14 +131,22 @@ export function Avatar({ currentEmotion = 'netral', isSpeaking = false }) {
       const mouthSmileIndex = wolf3DHead.morphTargetDictionary["mouthSmile"];
       const mouthAngryIndex = wolf3DHead.morphTargetDictionary["mouthAngry"];
       const mouthSadIndex = wolf3DHead.morphTargetDictionary["mouthSad"];
+      const mouthFrownIndex = wolf3DHead.morphTargetDictionary["mouthFrown"];
       const browDownIndex = wolf3DHead.morphTargetDictionary["browDown"];
       const browUpIndex = wolf3DHead.morphTargetDictionary["browUp"];
+      const eyeWideIndex = wolf3DHead.morphTargetDictionary["eyeWide"];
+      const eyeSquintIndex = wolf3DHead.morphTargetDictionary["eyeSquint"];
+      const cheekPuffIndex = wolf3DHead.morphTargetDictionary["cheekPuff"];
       
       if (mouthSmileIndex !== undefined) wolf3DHead.morphTargetInfluences[mouthSmileIndex] = currentEmotionValues.mouthSmile;
       if (mouthAngryIndex !== undefined) wolf3DHead.morphTargetInfluences[mouthAngryIndex] = currentEmotionValues.mouthAngry;
       if (mouthSadIndex !== undefined) wolf3DHead.morphTargetInfluences[mouthSadIndex] = currentEmotionValues.mouthSad;
+      if (mouthFrownIndex !== undefined) wolf3DHead.morphTargetInfluences[mouthFrownIndex] = currentEmotionValues.mouthFrown;
       if (browDownIndex !== undefined) wolf3DHead.morphTargetInfluences[browDownIndex] = currentEmotionValues.browDown;
       if (browUpIndex !== undefined) wolf3DHead.morphTargetInfluences[browUpIndex] = currentEmotionValues.browUp;
+      if (eyeWideIndex !== undefined) wolf3DHead.morphTargetInfluences[eyeWideIndex] = currentEmotionValues.eyeWide;
+      if (eyeSquintIndex !== undefined) wolf3DHead.morphTargetInfluences[eyeSquintIndex] = currentEmotionValues.eyeSquint;
+      if (cheekPuffIndex !== undefined) wolf3DHead.morphTargetInfluences[cheekPuffIndex] = currentEmotionValues.cheekPuff;
     }
   });
 
@@ -141,8 +159,13 @@ export function Avatar({ currentEmotion = 'netral', isSpeaking = false }) {
       mouthSmile: 0,
       mouthAngry: 0,
       mouthSad: 0,
+      mouthFrown: 0,
+      mouthOpen: 0,
       browDown: 0,
-      browUp: 0
+      browUp: 0,
+      eyeWide: 0,
+      eyeSquint: 0,
+      cheekPuff: 0
     };
 
     // Apply emotion-specific target values
@@ -171,6 +194,40 @@ export function Avatar({ currentEmotion = 'netral', isSpeaking = false }) {
       case 'defensif':
         newTargetValues.browUp = 0.7;
         console.log('🎭 VR Target: anxious expression');
+        break;
+        
+      case 'kecewa':
+        newTargetValues.mouthFrown = 0.8;
+        newTargetValues.browDown = 0.5;
+        newTargetValues.mouthSad = 0.4;
+        console.log('🎭 VR Target: disappointed expression');
+        break;
+        
+      case 'takut':
+        newTargetValues.eyeWide = 0.9;
+        newTargetValues.browUp = 0.8;
+        newTargetValues.mouthOpen = 0.3;
+        console.log('🎭 VR Target: scared expression');
+        break;
+        
+      case 'bingung':
+        newTargetValues.browUp = 0.6;
+        newTargetValues.browDown = 0.3;
+        newTargetValues.eyeSquint = 0.4;
+        console.log('🎭 VR Target: confused expression');
+        break;
+        
+      case 'diam':
+        newTargetValues.mouthFrown = 0.3;
+        newTargetValues.eyeSquint = 0.2;
+        console.log('🎭 VR Target: silent expression');
+        break;
+        
+      case 'tertawa':
+        newTargetValues.mouthSmile = 1.2;
+        newTargetValues.eyeSquint = 0.7;
+        newTargetValues.cheekPuff = 0.5;
+        console.log('🎭 VR Target: laughing expression');
         break;
         
       default:
@@ -222,8 +279,13 @@ export function Avatar({ currentEmotion = 'netral', isSpeaking = false }) {
         mouthSmile: 0,
         mouthAngry: 0,
         mouthSad: 0,
+        mouthFrown: 0,
+        mouthOpen: 0,
         browDown: 0,
-        browUp: 0
+        browUp: 0,
+        eyeWide: 0,
+        eyeSquint: 0,
+        cheekPuff: 0
       };
       
       setTargetEmotionValues(neutralValues);

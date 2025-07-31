@@ -12,6 +12,11 @@ const getEmotionEmoji = (emotion) => {
     'penyesalan': '😔',
     'kesal': '😠',
     'senang': '😊',
+    'kecewa': '😞',
+    'takut': '😨',
+    'bingung': '😕',
+    'diam': '😶',
+    'tertawa': '😂',
     'netral': '😐'
   };
   return emojiMap[emotion] || '😐';
@@ -27,6 +32,11 @@ const getEmotionColor = (emotion) => {
     'penyesalan': 'rgba(121, 85, 72, 0.3)',
     'kesal': 'rgba(255, 87, 34, 0.3)',
     'senang': 'rgba(76, 175, 80, 0.3)',
+    'kecewa': 'rgba(103, 58, 183, 0.3)',
+    'takut': 'rgba(255, 193, 7, 0.3)',
+    'bingung': 'rgba(139, 69, 19, 0.3)',
+    'diam': 'rgba(128, 128, 128, 0.3)',
+    'tertawa': 'rgba(255, 235, 59, 0.3)',
     'netral': 'rgba(158, 158, 158, 0.3)'
   };
   return colorMap[emotion] || 'rgba(158, 158, 158, 0.3)';

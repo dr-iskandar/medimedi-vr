@@ -79,8 +79,18 @@ export function VRConversationInterface({ onEmotionChange }) {
       return 'marah';
     } else if (lowerText.includes('senang') || lowerText.includes('bahagia') || lowerText.includes('gembira')) {
       return 'senang';
-    } else if (lowerText.includes('sedih') || lowerText.includes('kecewa')) {
+    } else if (lowerText.includes('sedih')) {
       return 'sedih';
+    } else if (lowerText.includes('kecewa') || lowerText.includes('mengecewakan')) {
+      return 'kecewa';
+    } else if (lowerText.includes('takut') || lowerText.includes('ketakutan') || lowerText.includes('ngeri')) {
+      return 'takut';
+    } else if (lowerText.includes('bingung') || lowerText.includes('kebingungan') || lowerText.includes('tidak mengerti')) {
+      return 'bingung';
+    } else if (lowerText.includes('diam') || lowerText.includes('tidak bicara') || lowerText.includes('senyap')) {
+      return 'diam';
+    } else if (lowerText.includes('tertawa') || lowerText.includes('lucu') || lowerText.includes('haha') || lowerText.includes('wkwk')) {
+      return 'tertawa';
     }
     return 'netral';
   };

@@ -1,0 +1,31 @@
+{
+  "name": "conversation-summary-api",
+  "version": "1.0.0",
+  "description": "API for getting conversation summary from ElevenLabs Conversational AI",
+  "main": "conversation-summary-api.js",
+  "scripts": {
+    "start": "node conversation-summary-api.js",
+    "dev": "nodemon conversation-summary-api.js",
+    "test": "node test-conversation-api.js"
+  },
+  "keywords": [
+    "elevenlabs",
+    "conversation",
+    "api",
+    "summary",
+    "analysis"
+  ],
+  "author": "MediMedi VR Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
